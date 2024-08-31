@@ -4,36 +4,36 @@
 let intervalId;
 let timeoutId;
 
-$(document).ready(function () {
+$(function () {
     const BASE_URL = config.baseUrl;
     const SPINNER_COUNT = config.spinnerCount;
 
-    $('#start120').click(function () {
+    $('#start120').on("click", function () {
         callApi(`${BASE_URL}/start120`, 'GET');
         startRound(120);        
     });
 
-    $('#start180').click(function () {
+    $('#start180').on("click", function () {
         callApi(`${BASE_URL}/start180`, 'GET');
         startRound(180);        
     });
 
-    $('#startduck').click(function () {
+    $('#startduck').on("click", function () {
         callApi(`${BASE_URL}/startduck`, 'GET');
         startRound(75);        
     });
 
-    $('#stopround').click(function () {
+    $('#stopround').on("click", function () {
         callApi(`${BASE_URL}/stop`, 'GET');        
         stopUi();      
     });
 
-    $('#flipper').click(function () {
+    $('#flipper').on("click", function () {
         callApi(`${BASE_URL}/flipper`, 'GET');
         disableButton($('#flipper'), 1);
     });
 
-    $('#pit').click(function () {
+    $('#pit').on("click", function () {
         callApi(`${BASE_URL}/pit`, 'GET');
         disableButton($('#pit'), 3);
     });
