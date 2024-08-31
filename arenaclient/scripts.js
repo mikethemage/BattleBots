@@ -1,4 +1,9 @@
 // scripts.js
+
+// Global variables to store the interval and timeout IDs
+let intervalId;
+let timeoutId;
+
 $(document).ready(function () {
     const BASE_URL = config.baseUrl;
     const SPINNER_COUNT = config.spinnerCount;
@@ -56,6 +61,8 @@ $(document).ready(function () {
     }
 
     function stopUi() {
+        clearInterval(intervalId); // Clear the interval
+        clearTimeout(timeoutId); // Clear the timeout
         $('.start-button').prop('disabled', false);
         $('.stop-button').prop('disabled', true);
         $('.spinner-off').prop('checked',true);
@@ -67,9 +74,51 @@ $(document).ready(function () {
         $('.stop-button').prop('disabled', false);
         $('.arena-hazard').prop('disabled', false);
 
+        // Initialize the counter display
+        showCountdown(length * 1000);
+        
+        // Get the current UTC timestamp (milliseconds since January 1, 1970)
+        const utcTimestamp = new Date().getTime();
+
+        // Convert seconds to milliseconds and add to the current UTC timestamp
+        const newTimestamp = utcTimestamp + length * 1000;
+
+        // Create a new Date object with the updated timestamp
+        let newDate = new Date(newTimestamp);        
+
+        // Create an interval to update the counter every second
+        intervalId = setInterval(() => {
+            const utcTimestamp = new Date().getTime();
+            const differenceInMilliseconds = newDate - utcTimestamp;                       
+
+            // Check if time has run out
+            if (differenceInMilliseconds <= 0) {
+                clearInterval(intervalId); // Clear the interval when the time is up
+                showCountdown(0);
+            }
+            else {
+                // Update the counter display
+                showCountdown(differenceInMilliseconds);
+            }
+        }, 50);
+
         setTimeout(() => {
             stopUi();
+            showCountdown(0);
         }, length * 1000);
+    }
+
+    function showCountdown(timeRemaining) {
+
+        var minutes = Math.floor(timeRemaining / (60 * 1000));
+        var seconds = Math.floor((timeRemaining % (60 * 1000)) / 1000);
+        var milliseconds = timeRemaining % 1000;
+        
+        $('#time-remaining.d-none').removeClass('d-none');
+        $('#time-remaining').text( (minutes < 10 ? '0' : '') + minutes + ':' +
+        (seconds < 10 ? '0' : '') + seconds + '.' +
+        (milliseconds < 100 ? '0' : '') +
+        (milliseconds < 10 ? '0' : '') + milliseconds);
     }
 
     function controlSpinner(spinnerId, action) {
